@@ -5,7 +5,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/ztrue/tracerr"
-	"google.golang.org/grpc/codes"
 )
 
 type Logs struct {
@@ -38,7 +37,7 @@ func (l *Logs) Debug(message string) {
 	logrus.Debug(message)
 }
 
-func (l *Logs) Error(code codes.Code, err error, errorType string) {
+func (l *Logs) Error(code int, err error, errorType string) {
 	l.init()
 	funcName, path, line := l.runtimeTrace(err)
 	logrus.WithFields(logrus.Fields{
