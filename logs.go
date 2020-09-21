@@ -1,10 +1,12 @@
 package grpcLogs
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/sirupsen/logrus"
 	"github.com/ztrue/tracerr"
+	"k8s.io/klog"
 )
 
 type Logs struct {
@@ -24,22 +26,26 @@ func (l *Logs) init() {
 
 func (l *Logs) Info(message string) {
 	l.init()
+	klog.V(0).Info(message, "\n")
 	logrus.Info(message)
 }
 
 func (l *Logs) Warn(message string) {
 	l.init()
+	klog.V(0).Info(message, "\n")
 	logrus.Warn(message)
 }
 
 func (l *Logs) Debug(message string) {
 	l.init()
+	klog.V(0).Info(message, "\n")
 	logrus.Debug(message)
 }
 
 func (l *Logs) Error(code int, err error, errorType string) {
 	l.init()
 	funcName, path, line := l.runtimeTrace(err)
+	klog.V(0).Info(fmt.Sprintf("error=%v,line=%d,func=%s,path=%s,code=%d", err, line, funcName, path, code), "\n")
 	logrus.WithFields(logrus.Fields{
 		"line":      line,
 		"func":      funcName,
@@ -52,6 +58,7 @@ func (l *Logs) Error(code int, err error, errorType string) {
 func (l *Logs) Fatal(err error) {
 	l.init()
 	funcName, path, line := l.runtimeTrace(err)
+	klog.V(0).Info(fmt.Sprintf("error=%v,line=%d,func=%s,path=%s", err, line, funcName, path), "\n")
 	logrus.WithFields(logrus.Fields{
 		"line": line,
 		"func": funcName,
@@ -62,6 +69,7 @@ func (l *Logs) Fatal(err error) {
 func (l *Logs) Panic(err error) {
 	l.init()
 	funcName, path, line := l.runtimeTrace(err)
+	klog.V(0).Info(fmt.Sprintf("error=%v,line=%d,func=%s,path=%s", err, line, funcName, path), "\n")
 	logrus.WithFields(logrus.Fields{
 		"line": line,
 		"func": funcName,
